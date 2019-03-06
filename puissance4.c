@@ -10,8 +10,6 @@ char O='O';
 char* J1;
 char* J2;
 
-int gagner = 0;
-int attaquer = 1;
 
 void presentation(char* J1,char* J2){
     
@@ -57,95 +55,231 @@ void presentation(char* J1,char* J2){
 
 // Initialiser le tableau 
 void init(char grille[ligne][colone]){ 
+
     int i,j;
+
 	for(i = 0 ; i < colone; i++){
-		for(j = 0 ; j<=ligne; j++){
-			grille[i][j]='.'; /
+
+		for(j = 0 ; j <= ligne; j++){
+
+			grille[i][j] = '.';
 		}					 
 	}						  
 } 
 
 // affichage de la grille 
-void afficheGrille(char grille[ligne][colone]){
-	int i,j;                           
-	for(i = 0; i < colone; i++){ 
-		printf("  %d  ", i + 1); 
-	}
-        printf("\n|");
-    
-	for(i = 0; i<colone; i++){   $
-		printf("%s","-----" ); 
-	}
-	printf("|"); 
-	printf("\n");
 
-for(i = ligne ; i > 0; i--){ 
-        printf("|");
-        for(j = 0; j < colone; j++){
-            printf("  %c  ", grille[j][i]);
-        }
-        printf("|\n");
+void aff(char grille[ligne][colone]) {
+    for(int i = 0; i < colone; i++){
+        printf(" %d ", i + 1);
     }
-    printf("|");
-    for(j = 0; j < colone; j++)
-        printf("_____");
-    printf("|\n");	
-    printf(" ");
-	for(i = 0; i < colone; i++){
-		printf("  %d  ",i+1);
-	}
-	printf("\n");
+    printf("\n");
+
+
+    for(int i = (ligne - 1); i >= 0; i--){
+        for (int y = 0; y < colone ; y++)
+            printf(" %c ", grille[i][y]);
+        printf("\n");
+    }
+    printf("\n");
+    printf("\n");
 }
+    
 
-void choix (char grille[ligne][colone], char* Joueur){
-    int choix, i ;
 
-//Le joueur choisi la colonne
-printf("%s ! Entrez les coordonnees: \n", Joueur); 
-scanf("%d", &choix); 
+int choix (char grille[ligne][colone], int Joueur, int choix_j){
+    int i = 0;
+while(i < 6){
+    if(grille[i][choix_j] == '.' && Joueur == 0){
+            grille[i][choix_j] = 'X'; 
+            return 0;
+        }
+     if (grille[i][choix_j] =='.' && Joueur == 1){
+            grille[i][choix_j] = 'O';
+            return 0;
+        }
+    i++;
+}
+return 1;
+}
+    
+int  verification(char grille[ligne][colone], int Joueur){
 
-//Tant que colonne choisie  pleine 
-while((grille[choix][0] == X) || (grille[choix][0] == O)){ 
+    int i;
+    int j;
+// Horizontale 
 
-    printf("La colonne est pleine!\n\n"); 
-    printf("%s ! Entrez les coordonnees: \n", Joueur); 
-    scanf("%d", &choix); 
-} 
-// tant que le joueur entre pas une colonne valide
-    while((choix > colone) || (choix < 1)){ 
+    for(i = 0; i < ligne; i++){
+        for(j = 0; j < 4; j++){ // 4 car pions aligner = gagner 
 
-        printf("Entrez une colonne correct!\n\n"); 
-        printf("%s ! Entrez les coordonnees: \n", Joueur); 
-        scanf("%d", &choix); 
-}   
-/*Verifie si la premiere case ( derniere ligne grille) vide sinon place le placement du  pion  au dessus */
-    for(i = ligne; i >= 0; i--){ 
-        if(grille[choix][i]=='.'){ 
-            if(Joueur == J1){ 
-                grille[choix][i] = X; 
-            }else{ 
-                grille[choix][i] = O; 
+            if(Joueur == 0){
+
+               
+                if(grille[i][j] == 'X' && grille[i][j+ 1] == 'X' && grille[i][j + 2] == 'X' && grille[i][j + 3] == 'X' ){
+                    return 0;
+
+                }
+            }
+            else{
+
+                if(grille[i][j] == 'O' && grille[i][j + 1] == 'O' && grille[i][j + 2] =='O' && grille[i][j + 3] == 'O'){
+                    return 0;
+
+                }  
+            }
+        }
+      
+
+    }
+
+
+
+//Vertical
+
+
+for(j = 0; j < colone; j++){
+        for(i = 0; i < 4; i++){ // 4 car pions aligner = gagner 
+
+            if(Joueur == 0){
+
+               
+                if(grille[i][j] == 'X' && grille[i + 1][j] == 'X' && grille[i + 2][j] == 'X' && grille[i + 3][j] == 'X' ){
+                    return 0;
+
+                }
+            }
+            else{
+
+                if(grille[i][j] == 'O' && grille[i + 1][j] == 'O' && grille[i + 2][j] =='O' && grille[i + 3][j] == 'O'){
+                    return 0;
+
+                }  
+            }
+        }
+      
+
+    }
+
+// diagonal gauche vers droite 
+
+    for( i = 0; i < 3; i++){
+        for(j = 0; j < 4; j++){
+            if( i + 3 < ligne && j + 3 < colone){ // condition pour ne pas avoir de débordement 
+                if(Joueur == 0){
+                    if(grille[i][j] == 'X' && grille[i + 1][j + 1] =='X' && grille[i + 2][j + 2] && grille[i + 3][j + 3] == 'X'){
+                        return 0;
+                    }
+                    else{
+                       if(grille[i][j] == 'O' && grille[i + 1][j + 1] =='O' && grille[i + 2][j + 2] && grille[i + 3][j + 3] == 'X'){
+                            return 0;
+
+                       }
+
+                    }
+                }
+
             }
         }
     }
-}
-    
 
+//diagonal droite gauche
+    for( i = ligne; i >= 3; i--){
+        for(j = 0; j < 4; j++){
+            if(i - 3 >= 0 && j + 3 <= colone){
+                if(Joueur == 0){
+                    if(grille[i][j] =='X' && grille[i - 1][j + 1] == 'X' && grille[i - 2][j +2] == 'X' && grille[i - 3][j + 3] == 'X'){
+                        return 0;
+                    }
+
+                    else{
+
+                        if(grille[i][j] =='O' && grille[i - 1][j + 1] == 'O' && grille[i - 2][j +2] == 'O' && grille[i - 3][j + 3] == 'O'){
+                            return 0;
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+
+    return 1;
+   
+  }
     
 
 
 
 
 int main(int argc , char **argv){
-    char* Joueur = malloc(20*sizeof(char));
+
+    int Joueur = 0;
     char* J1 = malloc(20*sizeof(char));
     char* J2 = malloc(20*sizeof(char));
-	presentation(J1,J2);
+    char grille [ligne][colone];
+    int condition_victoire = 1;
+    int choix_j;
+    int round = 1;
 
-	char grille [ligne][colone];
-	init(grille);
-	afficheGrille(grille);
-    choix(grille,J1);
-    choix(grille,J2);
+    presentation(J1,J2);
+    init(grille);
+
+    while(condition_victoire == 1){
+
+        //afficheGrille(grille);
+        aff(grille);
+        if(Joueur == 0){
+            printf("%s ! Entrez les coordonnees: \n", J1); 
+            scanf("%d", &choix_j);
+            choix_j = choix_j - 1;
+
+            printf("\n");
+             }
+        else{
+            printf("%s ! Entrez les coordonnees: \n", J2); 
+            scanf("%d", &choix_j); 
+            choix_j = choix_j - 1;
+            printf("\n");
+        }
+
+        if(choix(grille,Joueur,choix_j) == 0 && round <= 42){
+            //test_victoire();
+           condition_victoire = verification(grille,Joueur);
+
+           if(condition_victoire == 1){
+            if(Joueur == 1)
+                Joueur = 0;
+            else
+                Joueur = 1;
+        }
+            round ++;
+        }
+        else{
+            printf("Saissez une autre colone \n");
+
+        }
+    }
+    
+
+    if(round <= 42){
+        if(Joueur == 0){
+             aff(grille);
+
+            printf("%s a gagner! Bravo\n",J1);
+        }
+        else if(Joueur == 1){
+             aff(grille);
+            printf("%s a gagner! Bravo\n",J2);
+        }
+        
+        else{
+            printf("Match nul !\n");
+        }
+
+
+        
+
+    
     return 0;
+}
 }
